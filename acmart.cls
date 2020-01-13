@@ -1662,23 +1662,12 @@
        \fi
     \fi
     \if@printcopyright
-      \copyright\ \@copyrightyear\ \@copyrightowner\\
     \else
     \fi
     \if@ACM@manuscript
     \else
       \if@ACM@authorversion
           
-          \if@ACM@journal@bibstrip
-            
-          \else
-            
-          \fi
-          \ifx\@acmDOI\@empty
-          
-          \else
-            
-          \fi\\
         \else
           \if@ACM@nonacm\else
             \if@ACM@journal@bibstrip

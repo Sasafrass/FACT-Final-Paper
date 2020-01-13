@@ -1664,24 +1664,20 @@
     \if@printcopyright
       \copyright\ \@copyrightyear\ \@copyrightowner\\
     \else
-      \@copyrightyear.\
     \fi
     \if@ACM@manuscript
-      Manuscript submitted to ACM\\
     \else
       \if@ACM@authorversion
-          This is the author's version of the work. It is posted here for
-          your personal use. Not for redistribution. The definitive Version
-          of Record was published in
+          
           \if@ACM@journal@bibstrip
-            \emph{\@journalName}%
+            
           \else
-            \emph{\@acmBooktitle}%
+            
           \fi
           \ifx\@acmDOI\@empty
-          .
+          
           \else
-            , \@formatdoi{\@acmDOI}.
+            
           \fi\\
         \else
           \if@ACM@nonacm\else

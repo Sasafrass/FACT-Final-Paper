@@ -1,0 +1,87 @@
+
+\documentclass[sigconf,authordraft]{acmart}
+
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+\begin{document}
+\title{Explain! Or we will complain}
+\author{Christiaan van der Vlist}
+\affiliation{%
+  \institution{University of Amsterdam}
+  \country{Netherlands}
+}
+\email{christiaan.vandervlist@student.uva.nl}
+
+\author{Albert Harkema}
+\affiliation{%
+  \institution{University of Amsterdam}
+  \country{Netherlands}}
+\email{albert.harkema@student.uva.nl}
+
+\author{Anna Langedijk}
+\affiliation{%
+  \institution{University of Amsterdam}
+  \country{Netherlands}
+}
+
+\author{Hinrik Snær Guðmundsson}
+\affiliation{%
+ \institution{University of Amsterdam}
+ \country{Netherlands}}
+ \email{hinrik\_snaer@gmail.com}
+\renewcommand{\shortauthors}{van der Vlist, et al.}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\input{introduction.tex}
+
+\section{Method}
+\input{method.tex}
+
+\section{Experimental setup}
+\input{setup.tex}
+
+\section{Results}
+\input{results.tex}
+
+\section{Discussion}
+\input{discussion.tex}
+
+\section{Broader Implications}
+\input{implications.tex}
+
+\section{Conclusion}
+\input{conclusion.tex}
+
+\begin{acks}
+To Robert, for the bagels and explaining CMYK and color spaces.
+\end{acks}
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample_base}
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf.tex'.

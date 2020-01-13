@@ -5,13 +5,13 @@
                      '(("acmart" "sigconf" "authordraft")))
    (TeX-run-style-hooks
     "latex2e"
-    "introduction"
-    "method"
-    "setup"
-    "results"
-    "discussion"
-    "implications"
-    "conclusion"
+    "content/introduction"
+    "content/method"
+    "content/setup"
+    "content/results"
+    "content/discussion"
+    "content/implications"
+    "content/conclusion"
     "acmart"
     "acmart10")
    (TeX-add-symbols

@@ -1664,24 +1664,7 @@
     \if@printcopyright
     \else
     \fi
-    \if@ACM@manuscript
-    \else
-      \if@ACM@authorversion
-          
-        \else
-          \if@ACM@nonacm\else
-            \if@ACM@journal@bibstrip
-              \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle
-              \ifx\@acmPrice\@empty\else\ \$\@acmPrice\fi\\
-              \@formatdoi{\@acmDOI}%
-            \else % Conference
-              \ifx\@acmISBN\@empty\else ACM~ISBN~\@acmISBN
-              \ifx\@acmPrice\@empty.\else\dots\$\@acmPrice\fi\\\fi
-              \ifx\@acmDOI\@empty\else\@formatdoi{\@acmDOI}\fi%
-            \fi
-          \fi
-        \fi
-      \fi}
+    }
     \fi
   \endgroup
   \setcounter{footnote}{0}%

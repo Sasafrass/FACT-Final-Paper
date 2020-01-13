@@ -1190,19 +1190,14 @@
 \def\@journalNameShort{\@journalName}%
 \def\@permissionCodeOne{XXXX-XXXX}%
 \def\@permissionCodeTwo{}%
-\newcommand\acmConference[4][]{%
-  \gdef\acmConference@shortname{#1}%
-  \gdef\acmConference@name{#2}%
-  \gdef\acmConference@date{#3}%
-  \gdef\acmConference@venue{#4}%
-  \ifx\acmConference@shortname\@empty
-    \gdef\acmConference@shortname{#2}%
-  \fi
-  \global\@ACM@journal@bibstripfalse
+\newcommand\acmConference[1][]{%
+  \gdef\acmConference@shortname{}%
+  \gdef\acmConference@name{}%
+  \gdef\acmConference@date{}%
+  \gdef\acmConference@venue{}%
 }
 \if@ACM@journal\else
-\acmConference[Conference'17]{ACM Conference}{July 2017}{Washington,
-  DC, USA}%
+\acmConference[]{}{}{}%
 \fi
 \def\acmBooktitle#1{\gdef\@acmBooktitle{#1}}
 \acmBooktitle{Proceedings of \acmConference@name
@@ -1656,40 +1651,15 @@
     \if@ACM@authorversion\else
       \if@printpermission\@copyrightpermission\par\fi
     \fi
-    \if@ACM@manuscript\else
-       \if@ACM@journal@bibstrip\else % Print the conference information
-         {\itshape \acmConference@shortname, \acmConference@date, \acmConference@venue}\par
-       \fi
-    \fi
-    \if@printcopyright
-    \else
-    \fi
     }
     \fi
   \endgroup
   \setcounter{footnote}{0}%
   \@mkabstract
-  \if@ACM@printccs
-  \ifx\@concepts\@empty\else\bgroup
-      {\@specialsection{CCS Concepts}%
-         \@concepts\par}\egroup
-     \fi
-   \fi
-   \ifx\@keywords\@empty\else\bgroup
-      {\if@ACM@journal
-         \@specialsection{Additional Key Words and Phrases}%
-       \else
-         \@specialsection{Keywords}%
-       \fi
-         \@keywords}\par\egroup
-   \fi
   \andify\authors
   \andify\shortauthors
   \global\let\authors=\authors
   \global\let\shortauthors=\shortauthors
-  \if@ACM@printacmref
-     \@mkbibcitation
-  \fi
   \hypersetup{%
     pdfauthor={\authors},
     pdftitle={\@title},

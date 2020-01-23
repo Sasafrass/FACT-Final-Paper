@@ -1,5 +1,8 @@
-
 \documentclass[sigconf,authordraft]{acmart}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing} % Acolades
+\usetikzlibrary{arrows}
+\usepackage{bm}
 
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -14,7 +17,7 @@
 %%\citestyle{acmauthoryear}
 
 \begin{document}
-\title{Explain! Or we will complain}
+\title{Ex-Plane! We Will Complain to Plane Jane}
 \author{Christiaan van der Vlist}
 \affiliation{%
   \institution{University of Amsterdam}
@@ -46,11 +49,8 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Hoi, komt deze change ook op github? Dat zou leuk zijn!
+\input{content/abstract.tex}
 
-Locale boi vanaf anna's computer
-
-Hey \cite{Spector90}
 \end{abstract}
 
 
@@ -80,14 +80,14 @@ Hey \cite{Spector90}
 \input{content/conclusion.tex}
 
 \begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
+To Robert, for the bagels and explaining YMCK and color spaces.
 \end{acks}
 
 %%
 %% The next two lines define the bibliography style to be used, and
 %% the bibliography file.
 \bibliographystyle{ACM-Reference-Format}
-\bibliography{sample-base}
+\bibliography{our_bibliography}
 
 \end{document}
 \endinput

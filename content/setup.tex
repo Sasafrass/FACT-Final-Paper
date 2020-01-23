@@ -1,2 +1,5 @@
-Whaddup, experimental setup
-\cite{Spector90}
+Describe the setup (hyperparameters etc) and why we chose those. For the MNIST this probably boils down to that we copied the original paper. For the new dataset we have to be more verbose.
+
+Because our first goal is to reproduce the results attained by \cite{li2018deep} we used the hyperparameters that are used in the paper. The authors set a number of hyperparameters: the number of prototype vectors, the size of the latent space and four hyperparameters $\lambda_{\text{class}}$, $\lambda_{\text{ae}}$, $\lambda_1$ and $\lambda_2$ for adjusting the ratio between the reconstruction error, the R1 term and the R2 term respectively. To allow for reproducibility, we used values of 20, 1, 1, and 1 respectively as done by \cite{li2018deep}.
+
+Furthermore, for the training we set the learning rate to 0.0001, the amount of epochs to 1500 and the batch size to 250 in accordance with with \cite{li2018deep}. This fairly low learning rate allows for slow but steady convergence but also necessitates a fairly high number of epochs, hence the usage of 1500 epochs. 

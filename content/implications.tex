@@ -1,1 +1,6 @@
 Link to other FACT domain papers (in section 5 in assignment description). Which papers do we want to talk about?
+
+Our architecture is not capable of downplaying or removing certain
+information from the input. This is necessary if the architecture is to be used for fair classification, because classification should not be dependent on sensitive information present in the input. Simply removing features explicitly related to this sensitive information is not enough, since the information can be inferred from other correlated features.
+
+A variant of the variational autoencoder architecture \citep{vae} proposed by Louizos et al. \citep{vfae} is capable of transforming input to a latent space in such a way that information can be factored out of the latent representation, while maintaining as much information as possible that is useful for classification. One potential way of making the architecture we propose in this paper fairer is by replacing the autoencoder with a Variational Fair Autoencoder. The prototypes would also need to be changed from points to distributions in the latent space. We believe that this will result in prototypes that are unbiased toward the sensitive information.

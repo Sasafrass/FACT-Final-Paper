@@ -1,11 +1,36 @@
-\begin{itemize}
-    \item Explain in detail how the algorithm works (and how we ported it from tensorflow to pytorch).
-    \begin{itemize}
-        \item Show the architecture image from the original paper.
-    \end{itemize}
-    \item Explain how we extended it for our experiment.
-\end{itemize}
+\begin{figure}[h]
+    \centering
+    \input{content/architecture.tex}
+    \caption{Architecture of the standard prototype model \\ {\normalfont Gray nodes represent images encoded in latent space. The {\color{gray} gray} lines indicate the similarity between the input images and prototypes.}}
+    \label{fig:nonhierarchical}
+\end{figure}
+The original architecture from \citep{li2018deep} is comprised of two parts: an autoencoder and a prototype network. These are shown schematically in Figure~\ref{fig:nonhierarchical}. The autoencoder's encoder, $f$, takes a $p$-dimensional input $\textbf{x}$ and transforms it to a $q$-dimensional latent-space. The decoder, $g$, takes a $q$-dimensional input and transforms it back into $p$-dimensional space. 
 
-The original architecture from \citep{li2018deep} is comprised of two parts. These are an autoencoder and a prototype network. The autoencoder's encoder, $f$, takes a $p$-dimensional input $\textbf{x}$ and transforms it to a $q$-dimensional latent-space. The decoder, $g$, takes a $q$-dimensional input and transforms it back into $p$-dimensional space. The prototype network, $h$, takes a $q$-dimensional input and outputs $K$ probabilities, one for each of the $K$ classes. This network itself consists of a prototype layer $p : \mathbb{R}^q\rightarrow\mathbb{R}^m$, followed by a fully-connected linear layer $w : \mathbb{R}^m\rightarrow\mathbb{R}^K$ with learnable weights (unless $m = K$, see further down), and finally a softmax layer $s : \mathbb{R}^K\rightarrow\mathbb{R}^K$. The prototype layer contains $m$ learnable $q$-dimensional prototype vectors. When given an input, this layer calculates the squared $L^2$ distance between this input and each of the prototype vectors. These distances are then pushed through $w$ and then through $s$ to get the classification. In case $m = K$, $w$ is a negative identity matrix $-I_{K \times K}$ instead.
+The prototype network, $h$, takes a $q$-dimensional input and outputs $K$ probabilities, one for each of the $K$ classes. This network itself consists of a prototype layer $p : \mathbb{R}^q\rightarrow \mathbb{R}^m$. It is  followed by a fully-connected linear layer $w : \mathbb{R}^m\rightarrow\mathbb{R}^K$ with learnable weights (unless $m = K$, see further down), and finally a softmax layer $s : \mathbb{R}^K\rightarrow\mathbb{R}^K$. The prototype layer contains $m$ learnable $q$-dimensional prototype vectors. When given an input, this layer calculates the squared $L^2$ distance between a single input and each of the prototype vectors. These $m$ distances are then pushed through $w$ and $s$ to get the classification. In case $m = K$, $w$ is a negative identity matrix $-I_{K \times K}$ instead.
 
-The loss is comprised of a sum of four terms: Cross-entropy for the classification, the reconstruction error of the autoencoder, and two interpretability terms $R_1$ and $R_2$, defined as the mean of the minimum of squared $L^2$ distances between every prototype and all encoded inputs and between every encoded input and all prototypes respectively. Hyperparameters can be used to set the ratio between these terms.
+The loss is comprised of a sum of four terms: Cross-entropy for the classification, the reconstruction error of the autoencoder, and two interpretability terms $R_1$ and $R_2$. $R_1$ is defined as the mean of the minimum of distances between some prototype and the current input images. It thus forces prototypes to be similar to at least one data point in the batch. $R_2$ is defined as the mean of the minimum of distances between some datapoint in latent space and the prototypes. This term forces encoded images to be close to at least one prototype.
+
+The final loss function is as follows:
+\[ L((f,g,h),D) = \lambda_{\text{class}}E(h \circ f, D) + \lambda_R R(g \circ f,D) + \lambda_1 R_1 + \lambda_2 R_2 \]
+Where $\lambda_{\text{class}}, \lambda_{R}, \lambda_{R_1}$ and $\lambda_{R_2}$ are hyperparameters that can be used to weigh the importance of the different terms. 
+
+\subsection{Hierarchical prototype network}
+In the hierarchical version of the prototype network, the single prototype network is replaced by a subprototype layer $p : \mathcal{R}^q\rightarrow \mathcal{R}^m$ of length $m > K$ and a superprototype layer $P:\mathcal{R}^{q\times m}\rightarrow\mathcal{R}^{k\times m}$. These two prototype layers both have their own classification output, denoted $h_{\text{sub}}$ and $h_{\text{sup}}$. Since $P$ is of size $K$, no intermediate linear layer is learned, instead its output is fixed to the negative identity matrix as before. The new layered prototype network is visualized in Figure~\ref{fig:hierarchical}. 
+\begin{figure}[bh]
+    \centering
+    \input{content/hierarchitecture.tex}
+    \caption{Architecture for a subprototype network\\ {\normalfont Gray nodes represent images encoded in latent space. {\color{red} Red} lines indicate the similarity between the input images and the subprototypes. In contrast, {\color{blue} blue} lines indicate the similarity between the superprototypes and subprototypes.}}
+    \label{fig:hierarchical}
+\end{figure}
+
+We adjust the loss function to deal with the new layer. Error terms $R_1$ and $R_2$ force the subprototypes to be similar to at least one input data point and vice versa, as before. Two new terms, $R_3$ and $R_4$ are introduced to enforce similarity for a superprototype to at least one subprototype and vice versa. Thus, the superprototypes are connected to the subprototypes the same way the subprototypes are connected to the inputs. This highlights the hierarchicality of our network. The final loss term is:
+
+\begin{align*}
+    L((f,g,h),D) &= \lambda_{sub} E_{sub}(h_{\text{sup}} \circ f, D)\\ &+ \lambda_{sup} E_{sup}(h_{\text{sup}} \circ f, D) 
+    + \lambda_R R(g \circ f,D)\\ &+ {\color{red}\lambda_1 R_1 + \lambda_2 R_2}  + {\color{blue}\lambda_3 R_3 + \lambda_4 R_4}
+\end{align*}
+
+Again, all $\lambda$'s are hyperparameters that can be used for weighting the various error terms.
+
+By extending the loss function in this way, we ensure that superprototypes are not changed directly based on their relationship to the inputs, but indirectly through the subprototypes. The mechanics by which this is achieved are the same as the ones that make the subprototypes resemble the input ($R_1$ and $R_3$ are computed in the exact same way. The only difference are the inputs. The same holds for $R_2$ and $R_4$). In this way, there is a hierarchy between the subprototypes and superprototypes. Furthermore, by using the superprototypes to classify inputs and taking the cross-entropy error of this task into account in the loss function, we ensure that the superprototypes remain useful for the main task -- that is, classification. 
+

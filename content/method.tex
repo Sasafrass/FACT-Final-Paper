@@ -16,12 +16,7 @@ Where $\lambda_{\text{class}}, \lambda_{R}, \lambda_{R_1}$ and $\lambda_{R_2}$ a
 
 \subsection{Hierarchical prototype network}
 In the hierarchical version of the prototype network, the single prototype network is replaced by a subprototype layer $p : \mathcal{R}^q\rightarrow \mathcal{R}^m$ of length $m > K$ and a superprototype layer $P:\mathcal{R}^{q\times m}\rightarrow\mathcal{R}^{k\times m}$. These two prototype layers both have their own classification output, denoted $h_{\text{sub}}$ and $h_{\text{sup}}$. Since $P$ is of size $K$, no intermediate linear layer is learned, instead its output is fixed to the negative identity matrix as before. The new layered prototype network is visualized in Figure~\ref{fig:hierarchical}. 
-\begin{figure}[bh]
-    \centering
-    \input{content/hierarchitecture.tex}
-    \caption{Architecture for a subprototype network\\ {\normalfont Gray nodes represent images encoded in latent space. {\color{red} Red} lines indicate the similarity between the input images and the subprototypes. In contrast, {\color{blue} blue} lines indicate the similarity between the superprototypes and subprototypes.}}
-    \label{fig:hierarchical}
-\end{figure}
+
 
 We adjust the loss function to deal with the new layer. Error terms $R_1$ and $R_2$ force the subprototypes to be similar to at least one input data point and vice versa, as before. Two new terms, $R_3$ and $R_4$ are introduced to enforce similarity for a superprototype to at least one subprototype and vice versa. Thus, the superprototypes are connected to the subprototypes the same way the subprototypes are connected to the inputs. This highlights the hierarchicality of our network. The final loss term is:
 
@@ -34,3 +29,9 @@ Again, all $\lambda$'s are hyperparameters that can be used for weighting the va
 
 By extending the loss function in this way, we ensure that superprototypes are not changed directly based on their relationship to the inputs, but indirectly through the subprototypes. The mechanics by which this is achieved are the same as the ones that make the subprototypes resemble the input ($R_1$ and $R_3$ are computed in the exact same way. The only difference are the inputs. The same holds for $R_2$ and $R_4$). In this way, there is a hierarchy between the subprototypes and superprototypes. Furthermore, by using the superprototypes to classify inputs and taking the cross-entropy error of this task into account in the loss function, we ensure that the superprototypes remain useful for the main task -- that is, classification. 
 
+\begin{figure}[hb]
+    \centering
+    \input{content/hierarchitecture.tex}
+    \caption{Architecture for a subprototype network\\ {\normalfont Gray nodes represent images encoded in latent space. {\color{red} Red} lines indicate the similarity between the input images and the subprototypes. In contrast, {\color{blue} blue} lines indicate the similarity between the superprototypes and subprototypes.}}
+    \label{fig:hierarchical}
+\end{figure}

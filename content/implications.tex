@@ -1,7 +1,7 @@
 Link to other FACT domain papers (in section 5 in assignment description). Which papers do we want to talk about?
 
 Our architecture is not capable of downplaying or removing certain
-information from the input. This is necessary if the architecture is to be used for fair classification, because classification should not be dependent on sensitive information present in the input. Simply removing features explicitly related to this sensitive information is not enough, since the information can be inferred from other correlated features.
+information from the input. This is necessary if the architecture is to be used for fair classification, because classification should not be dependent on sensitive information present in the input. Simply removing features explicitly related to this sensitive information is not enough, since the information can be inferred from other correlated features \citep{unawarenesssucks}.
 
 Both interclass and intraclass differences may be used to check for biases in the model or the data it is trained on. A certain class may be underrepresented when it has few subprototypes, or may have a much higher variance in its subprototypes. Although these variations are not related to fairness when it comes to MNIST digits, they may become relevant when a prototype network is trained on data containing sensitive information.
 

@@ -1,0 +1,123 @@
+\documentclass{beamer}[169]
+\usepackage{wasysym}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{epsf}
+\usetikzlibrary{decorations.pathreplacing} % Acolades
+\usetikzlibrary{arrows}
+\usepackage{bm}
+\usefonttheme{professionalfonts}
+\usetheme{PaloAlto}
+\usecolortheme{spruce}
+\addtobeamertemplate{footline}
+{%
+   \usebeamercolor[fg]{author in sidebar}
+   \vskip-1cm\hskip10pt
+   %\insertpagenumber\,/\,\insertpresentationendpage\kern1em\vskip2pt%
+   \insertframenumber\,/\,\inserttotalframenumber\kern1em\vskip2pt%
+}
+
+\title{Towards Hierarchical Explanation}
+\author{Christiaan \and Hinrik \and Albert \and Anna}
+\date{FACT-AI 2020}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+
+\begin{frame}{Table of Contents}
+\tableofcontents
+\end{frame}
+
+
+
+\section{Reproducing the prototype network}
+\begin{frame}{Original paper}
+    \begin{thebibliography}{99}
+        \bibitem{deep}
+        Li, Oscar and Liu, Hao and Chen, Chaofan and Rudin, Cynthia.
+        \newblock Deep learning for case-based reasoning through prototypes: A neural network that explains its predictions.
+        \newblock {\em Thirty-Second AAAI Conference on Artificial Intelligence}, 2018
+    \end{thebibliography}
+\end{frame}
+
+\begin{frame}{Idea}
+\begin{itemize}
+    \item Broadly speaking, (convolutional) neural nets are not interpretable
+    \item Instead of explaining with a new model after training, integrate explanations in training goal
+    \item Learn a fixed amount of \alert{prototypes} which represent the entire dataset
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Building the loss function}
+\begin{block}{Loss function}
+ \only<1>{Loss = Reconstruction error}
+ \only<2>{Loss = Crossentropy loss + Reconstruction error}
+ \only<3-5>{Loss = Crossentropy loss + Reconstruction error + Regularization terms}
+ \only<1>{\[L((f,g)),D) = R(g \circ f, D)\]}
+ \only<2>{\[ L((f,g,h),D) =E(h \circ f, D) +  R(g \circ f,D)\]}
+ \only<3>{\[ L((f,g,h),D) =E(h \circ f, D) +  R(g \circ f,D) + R_1 + R_2\]}
+ \only<4-5>{\[ L((f,g,h),D) = \lambda_{\text{class}}E(h \circ f, D) + \lambda_R R(g \circ f,D) + \lambda_1 R_1 + \lambda_2 R_2\]}
+\end{block}
+ \only<5>{ \begin{block}{Regularization terms for prototypes $\bm{p_1},\dots,\bm{p_m}$}
+ \begin{align*}
+     R_1(\bm{p_1}, \bm{p_2}, \dots, \bm{p_m}, D) = \frac{1}{m}\sum_{j=1}^m \min_{i\in [1,n]}||\bm{p}_j- f(\bm{x}_i)||^2_2 \\
+     R_2(\bm{p_1}, \bm{p_2}, \dots, \bm{p_m}, D) = \frac{1}{{\color{blue}n}}\sum_{{\color{blue}i}=1}^{\color{blue}n} \min_{{\color{blue}j}\in [1,{\color{blue}m}]}||\bm{p}_j- f(\bm{x}_i)||^2_2
+ \end{align*}
+\end{block}}
+\end{frame}
+
+\begin{frame}{The prototype network}
+\begin{figure}
+    \input{content/slides/architecturesmall.tex}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Results}
+    
+\end{frame}
+
+
+\section{The hierarchical prototype network}
+\begin{frame}{The hierarchical idea}
+\begin{itemize}
+    \item Multiple prototypes of 1 class 
+    \item Sometimes prototype network does not learn a prototype for each class
+\end{itemize}
+Solution: \alert{subprototypes}\pause
+\begin{itemize}
+    \item $ \text{Input example}\prec \text{Subprototype}\prec \text{Superprototype}$, \\
+    Where $\prec$ means ``more specific than"
+    \item \emph{More layers!}
+    \item Allows network to learn each class in superprototype layer with $K$ superprototypes, and more specific prototypes (eg. different types of 2's) in the subprototype layer.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Two new loss terms}
+ \begin{align*}
+R_1(\bm{p_1}, \dots, \bm{p_m}, D) &= \frac{1}{m}\sum_{j=1}^m \min_{i\in [1,n]}||\bm{p}_j- f(\bm{x}_i)||^2_2 \\
+      R_2(\bm{p_1},  \dots, \bm{p_m}, D) &= \frac{1}{{\color{red}n}}\sum_{{\color{red}i}=1}^{\color{red}n} \min_{{\color{red}j}\in [1,{\color{red}m}]}||\bm{p}_j- f(\bm{x}_i)||^2_2\\
+     R_3(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{K}\sum_{k=1}^K \min_{j\in [1,m]}||\bm{P}_k- \bm{p}_j||^2_2 \\
+    R_4(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{{\color{blue}m}}\sum_{{\color{blue}j}=1}^{\color{blue}m} \min_{{\color{blue}k}\in [1,{\color{blue}K}]}||\bm{P}_k- \bm{p}_j||^2_2
+ \end{align*}
+\end{frame}
+
+\begin{frame}{Our architecture}
+    \input{content/slides/hierarchitecturesmall.tex}
+\end{frame}
+
+
+\section{Hierarchical results}
+\begin{frame}{Nice pictures}
+    
+\end{frame}
+
+\section{Discussion}
+\begin{frame}{What does this mean for transparency? }
+    
+\end{frame}
+
+\end{document}

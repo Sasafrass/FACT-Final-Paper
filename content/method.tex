@@ -24,6 +24,10 @@ We adjust the loss function to deal with the new layer. Error terms $R_1$ and $R
     L((f,g,h),D) &= \lambda_{sub} E_{sub}(h_{\text{sup}} \circ f, D)\\ &+ \lambda_{sup} E_{sup}(h_{\text{sup}} \circ f, D) 
     + \lambda_R R(g \circ f,D)\\ &+ {\color{red}\lambda_1 R_1 + \lambda_2 R_2}  + {\color{blue}\lambda_3 R_3 + \lambda_4 R_4}
 \end{align*}
+\begin{align*}
+    R_3(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{K}\sum_{k=1}^K \min_{j\in [1,m]}||\bm{P}_k- \bm{p}_j||^2_2 \\
+     R_4(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{m}\sum_{j=1}^m \min_{k\in [1,K]}||\bm{P}_k- \bm{p}_j)||^2_2
+ \end{align*}
 
 Again, all $\lambda$'s are hyperparameters that can be used for weighting the various error terms.
 

@@ -1,5 +1,6 @@
 %%
 %% This is file `acmart.cls',
+%% Edited by Chris to have line numbers but no watermarks during the author draft
 %% generated with the docstrip utility.
 %%
 %% The original source files were:

@@ -1,12 +1,10 @@
-\begin{itemize}
-    \item Were we able to reproduce the original paper's results?
-    \item What are the pros and cons of this algorithm. Can the cons be compensated for? How do these pros and cons relate to what problems this algorithm is useful for?
-    \item What other datasets/problems should this algorithm be tested on?
-\end{itemize}
-
 The original paper \cite{li2018deep} introduced the notion of prototypes to improve neural networks by providing more explainability. Indeed, we have seen that these prototypes can converge to representations that explain why a neural network makes certain decisions. In this paper we ran the model proposed by the original paper and used the exact same hyperparameters as they did. By doing so, we were able to reproduce the results. The reported accuracies between our implementation and their implementation are nearly identical, and the prototypes converge to meaningful representations, namely prototypical digits. This indicates that the original model is reproducible. 
 
-Subsequently, we extended the original paper with the introduction of the hierarchical notion of subprototypes. This extension has a number of advantages. Firstly, adding a notion of hierarchy to the n
+Subsequently, we extended the original paper with the introduction of the hierarchical notion of subprototypes. This extension has a number of advantages. Firstly, adding a notion of hierarchy to the network allows for more explainability because we can also uncover interclass and intraclass variability of the uncovered classes. This may help researchers further explain why the neural network makes certain predictions.
+
+Secondly, having multiple prototype layers subdivided in super- and sub prototype layers gives our network the flexibility to figure out for itself, given the fixed number of total super- and sub prototypes, how many subclasses should be discerned from the dataset. This flexibility is constrained in the original paper in which the learned prototypes are forced to be both more general and more specific \cite{li2018deep}. 
+
+POTENTIAL THIRDLY: MENTION THAT THE ORIGINAL SUB PROTOTYPES DON'T NECESSARILY FIND THE 10 CLASSES BUT WE WANT TO FIND ALL 10
 
 However, we may also uncover a number of disadvantages. Firstly, our proposed architecture comes with a number of extra hyperparameters related to the separate loss terms in our loss function that need to be tuned. Generally, there are no efficient ways of performing this optimization \cite{paramoptimization} so more hyperparameters come at the cost of significantly increased computation time. This added computational cost can be alleviated by using random search instead of full grid search \cite{paramoptimization}.
 
@@ -15,5 +13,3 @@ Secondly, the number of prototypes and in our case subprototypes remains a hyper
 Thirdly, the prototypes add explainability, but do not allow for any further post-hoc analysis. This entails that we can not simply use this model on previously created models currently used for decision making to explain its predictions. However, if models such as ours that add explainability as an integral part of their architecture become more prevalent, networks used for predictions may in the future always include a component that provides this explainability, counteracting the need for post-hoc analysis.
 
 Fourthly, the prototypes do not give a feature by feature basis on which one could base an analysis. The prototypes themselves show what is a typical class but do not necessarily show what specific features it looks for in order to do the actual classification. For visual data people can see this relatively easily for themselves but for other data this may not be as apparent. 
-
-We award the results reproduced badge\footnote{https://www.acm.org/publications/policies/artifact-review-badging} to the paper because we were able to reproduce their findings and extend those.

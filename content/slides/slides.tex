@@ -3,6 +3,7 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \usepackage{epsf}
+\usepackage{media9}
 \usetikzlibrary{decorations.pathreplacing} % Acolades
 \usetikzlibrary{arrows}
 \usepackage{bm}
@@ -26,6 +27,9 @@
 
 \frame{\titlepage}
 
+\begin{frame}{Frame Title}
+    \includemedia{img/tiny.mp4}
+\end{frame}
 
 
 \begin{frame}{Table of Contents}
@@ -49,7 +53,14 @@
     \item Broadly speaking, (convolutional) neural nets are not interpretable
     \item Instead of explaining with a new model after training, integrate explanations in training goal
     \item Learn a fixed amount of \alert{prototypes} which represent the entire dataset
+    \item Model consists of an autoencoder an a prototype network...
 \end{itemize}
+\end{frame}
+
+\begin{frame}{The prototype network}
+\begin{figure}
+    \input{content/slides/architecturesmall.tex}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Building the loss function}
@@ -62,22 +73,41 @@
  \only<3>{\[ L((f,g,h),D) =E(h \circ f, D) +  R(g \circ f,D) + R_1 + R_2\]}
  \only<4-5>{\[ L((f,g,h),D) = \lambda_{\text{class}}E(h \circ f, D) + \lambda_R R(g \circ f,D) + \lambda_1 R_1 + \lambda_2 R_2\]}
 \end{block}
- \only<5>{ \begin{block}{Regularization terms for prototypes $\bm{p_1},\dots,\bm{p_m}$}
+ \only<4->{ \begin{block}{Regularization terms for prototypes $\bm{p_1},\dots,\bm{p_m}$}
  \begin{align*}
      R_1(\bm{p_1}, \bm{p_2}, \dots, \bm{p_m}, D) = \frac{1}{m}\sum_{j=1}^m \min_{i\in [1,n]}||\bm{p}_j- f(\bm{x}_i)||^2_2 \\
-     R_2(\bm{p_1}, \bm{p_2}, \dots, \bm{p_m}, D) = \frac{1}{{\color{blue}n}}\sum_{{\color{blue}i}=1}^{\color{blue}n} \min_{{\color{blue}j}\in [1,{\color{blue}m}]}||\bm{p}_j- f(\bm{x}_i)||^2_2
+     R_2(\bm{p_1}, \bm{p_2}, \dots, \bm{p_m}, D) = \frac{1}{{\color{blue}n}}\sum_{{\color{blue}i}=1}^{{\color{blue}n}} \min_{{\color{blue}j}\in [1,{\color{blue}m}]}||\bm{p}_j- f(\bm{x}_i)||^2_2
  \end{align*}
 \end{block}}
 \end{frame}
 
-\begin{frame}{The prototype network}
-\begin{figure}
-    \input{content/slides/architecturesmall.tex}
-    \end{figure}
+
+\begin{frame}{Reproducing results}
+    \begin{itemize}
+        \item MNIST digits
+        \item Autoencoder with four convolutional layers
+        \item Learning rate 0.0001, Epochs 1500 \pause
+        \item Test accuracy: 98.879\% (Paper reports 99.22\%)
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{Results}
-    
+\begin{frame}{Learned prototypes}
+\begin{itemize}
+\item Original results:\\
+\includegraphics[scale=0.4]{img/originals.png}
+\item Reproduced results:\\
+\includegraphics[scale=0.9]{img/reproduced42.png}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{However...}
+\begin{itemize} 
+\item Reproduced results with another seed:\\
+
+\includegraphics[scale=0.9]{img/reproduced9.png}
+
+\item (Accuracy still 98.71\%)
+\end{itemize}
 \end{frame}
 
 
@@ -92,16 +122,19 @@ Solution: \alert{subprototypes}\pause
     \item $ \text{Input example}\prec \text{Subprototype}\prec \text{Superprototype}$, \\
     Where $\prec$ means ``more specific than"
     \item \emph{More layers!}
-    \item Allows network to learn each class in superprototype layer with $K$ superprototypes, and more specific prototypes (eg. different types of 2's) in the subprototype layer.
+    \item Allows network to learn each class in superprototype layer with $K$ superprototypes... \pause and more specific prototypes (eg. different types of 2's) in the subprototype layer.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Two new loss terms}
+\begin{block}{New loss term}
+$L((f,g,h),D) = \lambda_{\text{class}}E(h \circ f, D) + \lambda_R R(g \circ f,D) + \lambda_1 R_1 + \lambda_2 R_2 + \lambda_3 R_3 + \lambda_4 R_4$
+\end{block}
  \begin{align*}
 R_1(\bm{p_1}, \dots, \bm{p_m}, D) &= \frac{1}{m}\sum_{j=1}^m \min_{i\in [1,n]}||\bm{p}_j- f(\bm{x}_i)||^2_2 \\
-      R_2(\bm{p_1},  \dots, \bm{p_m}, D) &= \frac{1}{{\color{red}n}}\sum_{{\color{red}i}=1}^{\color{red}n} \min_{{\color{red}j}\in [1,{\color{red}m}]}||\bm{p}_j- f(\bm{x}_i)||^2_2\\
+      R_2(\bm{p_1},  \dots, \bm{p_m}, D) &= \frac{1}{{\color{red}n}}\sum_{{\color{red}i}=1}^{{\color{red}n}} \min_{{\color{red}j}\in [1,{\color{red}m}]}||\bm{p}_j- f(\bm{x}_i)||^2_2\\
      R_3(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{K}\sum_{k=1}^K \min_{j\in [1,m]}||\bm{P}_k- \bm{p}_j||^2_2 \\
-    R_4(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{{\color{blue}m}}\sum_{{\color{blue}j}=1}^{\color{blue}m} \min_{{\color{blue}k}\in [1,{\color{blue}K}]}||\bm{P}_k- \bm{p}_j||^2_2
+    R_4(\bm{P_1}, \dots, \bm{P_K}, \bm{p_1}, \dots, \bm{p_m}) &= \frac{1}{{\color{blue}m}}\sum_{{\color{blue}j}=1}^{{\color{blue}m}} \min_{{\color{blue}k}\in [1,{\color{blue}K}]}||\bm{P}_k- \bm{p}_j||^2_2
  \end{align*}
 \end{frame}
 
@@ -109,15 +142,46 @@ R_1(\bm{p_1}, \dots, \bm{p_m}, D) &= \frac{1}{m}\sum_{j=1}^m \min_{i\in [1,n]}||
     \input{content/slides/hierarchitecturesmall.tex}
 \end{frame}
 
+\begin{frame}{Our architecture}
+\begin{itemize}
+    \item 
+\end{itemize}
+\end{frame}
 
 \section{Hierarchical results}
-\begin{frame}{Nice pictures}
-    
+\begin{frame}{Results}
+\begin{itemize}
+    \item Accuracy for superprototype classifier: 98.86\% %5999999999997 
+    \item Accuracy for subprototype classifier:  99.02\%
+\end{itemize}
+\end{frame}
+\begin{frame}{Superprototypes and subprototypes}
+\begin{itemize}
+ \item $K$ Superprototypes:\\   \includegraphics[scale=0.9]{img/hier42prot1499.png}
+
+ \item $m$ Subprototypes: \\   \includegraphics[scale=0.9]{img/hier42subprot1499.png}
+\end{itemize}
 \end{frame}
 
 \section{Discussion}
 \begin{frame}{What does this mean for transparency? }
-    
+    \begin{itemize}
+        \item Something something interpretability
+        \item Model interclass and intraclass variation
+        \item Something something bias
+    \end{itemize}
 \end{frame}
+
+\begin{frame}[plain]
+
+\advance\textwidth2cm
+\hsize\textwidth
+\columnwidth\textwidth
+\huge
+\alert{Thank you for your attention}\pause \\
+Any questions?
+\end{frame}
+
+
 
 \end{document}

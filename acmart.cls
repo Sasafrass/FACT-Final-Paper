@@ -1,6 +1,5 @@
 %%
 %% This is file `acmart.cls',
-%% Edited by Chris to have line numbers but no watermarks during the author draft
 %% generated with the docstrip utility.
 %%
 %% The original source files were:
@@ -38,7 +37,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{acmart}
-[2019/12/18 v1.66 Typesetting articles for the Association for Computing Machinery]
+[2020/01/11 v1.67 Typesetting articles for the Association for Computing Machinery]
 \def\@classname{acmart}
 \InputIfFileExists{acmart-preload-hook.tex}{%
   \ClassWarning{\@classname}{%
@@ -541,6 +540,14 @@
 \definecolor[named]{ACMGreen}{cmyk}{0.20,0,1,0.19}
 \definecolor[named]{ACMPurple}{cmyk}{0.55,1,0,0.15}
 \definecolor[named]{ACMDarkBlue}{cmyk}{1,0.58,0,0.21}
+\if@ACM@authordraft
+  \RequirePackage{draftwatermark}
+  \SetWatermarkFontSize{0.5in}
+  \SetWatermarkColor[gray]{.9}
+  \SetWatermarkText{\parbox{12em}{\centering
+      Unpublished working draft.\\
+      Not for distribution.}}
+\fi
 \RequirePackage{geometry}
 \ifcase\ACM@format@nr
 \relax % manuscript
@@ -726,6 +733,10 @@
 \AtBeginEnvironment{algorithm}{\let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig}
 \AtBeginEnvironment{algorithm*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{lstlisting}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{lstlisting*}{\let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig}
 
 \RequirePackage{caption, float}
@@ -1191,14 +1202,19 @@
 \def\@journalNameShort{\@journalName}%
 \def\@permissionCodeOne{XXXX-XXXX}%
 \def\@permissionCodeTwo{}%
-\newcommand\acmConference[1][]{%
-  \gdef\acmConference@shortname{}%
-  \gdef\acmConference@name{}%
-  \gdef\acmConference@date{}%
-  \gdef\acmConference@venue{}%
+\newcommand\acmConference[4][]{%
+  \gdef\acmConference@shortname{#1}%
+  \gdef\acmConference@name{#2}%
+  \gdef\acmConference@date{#3}%
+  \gdef\acmConference@venue{#4}%
+  \ifx\acmConference@shortname\@empty
+    \gdef\acmConference@shortname{#2}%
+  \fi
+  \global\@ACM@journal@bibstripfalse
 }
 \if@ACM@journal\else
-\acmConference[]{}{}{}%
+\acmConference[Conference'17]{ACM Conference}{July 2017}{Washington,
+  DC, USA}%
 \fi
 \def\acmBooktitle#1{\gdef\@acmBooktitle{#1}}
 \acmBooktitle{Proceedings of \acmConference@name
@@ -1575,23 +1591,129 @@
   IW3C2 (International World Wide Web Conference Committee), published
   under Creative Commons CC-BY-NC-ND~4.0 License.
   \fi}
-\def\@formatdoi#1{}
+\def\@formatdoi#1{\url{https://doi.org/#1}}
 \def\@copyrightpermission{%
   \ifcase\acm@copyrightmode\relax % none
   \or % acmcopyright
+   Permission to make digital or hard copies of all or part of this
+   work for personal or classroom use is granted without fee provided
+   that copies are not made or distributed for profit or commercial
+   advantage and that copies bear this notice and the full citation on
+   the first page. Copyrights for components of this work owned by
+   others than ACM must be honored. Abstracting with credit is
+   permitted. To copy otherwise, or republish, to post on servers or to
+   redistribute to lists, requires prior specific permission
+   and\hspace*{.5pt}/or  a fee. Request permissions from
+   permissions@acm.org.
   \or % acmlicensed
+   Permission to make digital or hard copies of all or part of this
+   work for personal or classroom use is granted without fee provided
+   that copies are not made or distributed for profit or commercial
+   advantage and that copies bear this notice and the full citation on
+   the first page. Copyrights for components of this work owned by
+   others than the author(s) must be honored. Abstracting with credit
+   is permitted.  To copy otherwise, or republish, to post on servers
+   or to  redistribute to lists, requires prior specific permission
+   and\hspace*{.5pt}/or  a fee. Request permissions from
+   permissions@acm.org.
   \or % rightsretained
+   Permission to make digital or hard copies of part or all of this work
+   for personal or classroom use is granted without fee provided that
+   copies are not made or distributed for profit or commercial advantage
+   and that copies bear this notice and the full citation on the first
+   page. Copyrights for third-party components of this work must be
+   honored. For all other uses, contact the
+   owner\hspace*{.5pt}/author(s).
   \or % usgov
+   This paper is authored by an employee(s) of the United States
+   Government and is in the public domain. Non-exclusive copying or
+   redistribution is allowed, provided that the article citation is
+   given and the authors and agency are clearly identified as its
+   source.
   \or % usgovmixed
+   ACM acknowledges that this contribution was authored or co-authored
+   by an employee, contractor, or affiliate of the United States
+   government. As such, the United States government retains a
+   nonexclusive, royalty-free right to publish or reproduce this
+   article, or to allow others to do so, for government purposes only.
   \or % cagov
+   This article was authored by employees of the Government of Canada.
+   As such, the Canadian government retains all interest in the
+   copyright to this work and grants to ACM a nonexclusive,
+   royalty-free right to publish or reproduce this article, or to allow
+   others to do so, provided that clear attribution is given both to
+   the authors and the Canadian government agency employing them.
+   Permission to make digital or hard copies for personal or classroom
+   use is granted. Copies must bear this notice and the full citation
+   on the first page.  Copyrights for components of this work owned by
+   others than the Canadian Government must be honored. To copy
+   otherwise, distribute, republish, or post, requires prior specific
+   permission and\hspace*{.5pt}/or a fee. Request permissions from
+   permissions@acm.org.
   \or % cagovmixed
+   ACM acknowledges that this contribution was co-authored by an
+   affiliate of the national government of Canada. As such, the Crown
+   in Right of Canada retains an equal interest in the copyright.
+   Reprints must include clear attribution to ACM and the author's
+   government agency affiliation.  Permission to make digital or hard
+   copies for personal or classroom use is granted.  Copies must bear
+   this notice and the full citation on the first page. Copyrights for
+   components of this work owned by others than ACM must be honored.
+   To copy otherwise, distribute, republish, or post, requires prior
+   specific permission and\hspace*{.5pt}/or a fee. Request permissions
+   from permissions@acm.org.
   \or % licensedusgovmixed
+   Publication rights licensed to ACM\@. ACM acknowledges that this
+   contribution was authored or co-authored by an employee, contractor
+   or affiliate of the United States government. As such, the
+   Government retains a nonexclusive, royalty-free right to publish or
+   reproduce this article, or to allow others to do so, for Government
+   purposes only.
   \or % licensedcagov
+   This article was authored by employees of the Government of Canada.
+   As such, the Canadian government retains all interest in the
+   copyright to this work and grants to ACM a nonexclusive,
+   royalty-free right to publish or reproduce this article, or to allow
+   others to do so, provided that clear attribution is given both to
+   the authors and the Canadian government agency employing them.
+   Permission to make digital or hard copies for personal or classroom
+   use is granted. Copies must bear this notice and the full citation
+   on the first page.  Copyrights for components of this work owned by
+   others than the Canadian Government must be honored. To copy
+   otherwise, distribute, republish, or post, requires prior specific
+   permission and\hspace*{.5pt}/or a fee. Request permissions from
+   permissions@acm.org.
   \or % licensedcagovmixed
+   Publication rights licensed to ACM\@. ACM acknowledges that this
+   contribution was authored or co-authored by an employee, contractor
+   or affiliate of the national government of Canada. As such, the
+   Government retains a nonexclusive, royalty-free right to publish or
+   reproduce this article, or to allow others to do so, for Government
+   purposes only.
   \or % othergov
+   ACM acknowledges that this contribution was authored or co-authored
+   by an employee, contractor or affiliate of a national government. As
+   such, the Government retains a nonexclusive, royalty-free right to
+   publish or reproduce this article, or to allow others to do so, for
+   Government purposes only.
   \or % licensedothergov
+   Publication rights licensed to ACM\@. ACM acknowledges that this
+   contribution was authored or co-authored by an employee, contractor
+   or affiliate of a national government. As such, the Government
+   retains a nonexclusive, royalty-free right to publish or reproduce
+   this article, or to allow others to do so, for Government purposes
+   only.
  \or % iw3c2w3
+   This paper is published under the Creative Commons Attribution~4.0
+   International (CC-BY~4.0) license. Authors reserve their rights to
+   disseminate the work on their personal and corporate Web sites with
+   the appropriate attribution.
  \or % iw3c2w3g
+   This paper is published under the Creative Commons
+   Attribution-NonCommercial-NoDerivs~4.0 International
+   (CC-BY-NC-ND~4.0) license. Authors reserve their rights to
+   disseminate the work on their personal and corporate Web sites with
+   the appropriate attribution.
  \fi}
 \def\copyrightyear#1{\def\@copyrightyear{#1}}
 \copyrightyear{\@acmYear}
@@ -1645,22 +1767,80 @@
   \fi
   \if@ACM@nonacm\else\footnotetextcopyrightpermission{%
     \if@ACM@authordraft
-        \raisebox{-2ex}[\z@][\z@]{\makebox[0pt][l]{}}%
+        \raisebox{-2ex}[\z@][\z@]{\makebox[0pt][l]{\large\bfseries
+            Unpublished working draft. Not for distribution.}}%
        \color[gray]{0.9}%
     \fi
     \parindent\z@\parskip0.1\baselineskip
     \if@ACM@authorversion\else
       \if@printpermission\@copyrightpermission\par\fi
     \fi
-    }
+    \if@ACM@manuscript\else
+       \if@ACM@journal@bibstrip\else % Print the conference information
+         {\itshape \acmConference@shortname, \acmConference@date, \acmConference@venue}\par
+       \fi
+    \fi
+    \if@printcopyright
+      \copyright\ \@copyrightyear\ \@copyrightowner\\
+    \else
+      \@copyrightyear.\
+    \fi
+    \if@ACM@manuscript
+      Manuscript submitted to ACM\\
+    \else
+      \if@ACM@authorversion
+          This is the author's version of the work. It is posted here for
+          your personal use. Not for redistribution. The definitive Version
+          of Record was published in
+          \if@ACM@journal@bibstrip
+            \emph{\@journalName}%
+          \else
+            \emph{\@acmBooktitle}%
+          \fi
+          \ifx\@acmDOI\@empty
+          .
+          \else
+            , \@formatdoi{\@acmDOI}.
+          \fi\\
+        \else
+          \if@ACM@nonacm\else
+            \if@ACM@journal@bibstrip
+              \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle
+              \ifx\@acmPrice\@empty\else\ \$\@acmPrice\fi\\
+              \@formatdoi{\@acmDOI}%
+            \else % Conference
+              \ifx\@acmISBN\@empty\else ACM~ISBN~\@acmISBN
+              \ifx\@acmPrice\@empty.\else\dots\$\@acmPrice\fi\\\fi
+              \ifx\@acmDOI\@empty\else\@formatdoi{\@acmDOI}\fi%
+            \fi
+          \fi
+        \fi
+      \fi}
     \fi
   \endgroup
   \setcounter{footnote}{0}%
   \@mkabstract
+  \if@ACM@printccs
+  \ifx\@concepts\@empty\else\bgroup
+      {\@specialsection{CCS Concepts}%
+         \noindent\@concepts\par}\egroup
+     \fi
+   \fi
+   \ifx\@keywords\@empty\else\bgroup
+      {\if@ACM@journal
+         \@specialsection{Additional Key Words and Phrases}%
+       \else
+         \@specialsection{Keywords}%
+       \fi
+         \noindent\@keywords}\par\egroup
+   \fi
   \andify\authors
   \andify\shortauthors
   \global\let\authors=\authors
   \global\let\shortauthors=\shortauthors
+  \if@ACM@printacmref
+     \@mkbibcitation
+  \fi
   \hypersetup{%
     pdfauthor={\authors},
     pdftitle={\@title},
@@ -1695,7 +1875,7 @@
   \or % siggraph
     \section*{#1}%
   \or % sigplan
-    \paragraph*{#1}%
+     \noindent\emph{\bfseries#1.}~%
   \or % sigchi
     \section*{#1}%
   \or % sigchi-a
@@ -2478,6 +2658,7 @@
   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
   {-3.5\p@}%
   {\ACM@NRadjust{\@parfont\@adddotafter}}}
+
 \renewcommand\part{\@startsection{part}{9}{\z@}%
   {-10\p@ \@plus -4\p@ \@minus -2\p@}%
   {4\p@}%
@@ -2509,20 +2690,8 @@
 \or % sigplan
  \def\@secfont{\bfseries\Large\section@raggedright}
  \def\@subsecfont{\bfseries\section@raggedright}
- \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-   {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
-   {.25\baselineskip}%
-   {\@subsubsecfont}}
  \def\@subsubsecfont{\bfseries\section@raggedright}
- \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
-   {-3.5\p@}%
-   {\@parfont\@addspaceafter}}
  \def\@parfont{\bfseries\itshape}
- \renewcommand\subparagraph{\@startsection{subparagraph}{5}{\z@}%
-   {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
-   {-3.5\p@}%
-   {\@subparfont\@addspaceafter}}
  \def\@subparfont{\itshape}
 \or % sigchi
  \setcounter{secnumdepth}{1}
